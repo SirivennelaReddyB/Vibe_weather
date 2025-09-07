@@ -3,6 +3,7 @@ import SearchBar from './components/SearchBar';
 import WeatherCard from './components/WeatherCard';
 import ForecastList from './components/ForecastList';
 import IntroAnimation from './components/IntroAnimation';
+import ExcelDownloadButton from './components/ExcelDownloadButton';
 import { LoadingSpinner, ErrorMessage } from './components/Loading';
 import { weatherService } from './services/weatherService';
 
@@ -81,7 +82,16 @@ function App() {
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
             🌤️ Vibe Weather
           </h1>
-          <p className="text-gray-600">Get accurate weather forecasts for any city</p>
+          <p className="text-gray-600 mb-4">Get accurate weather forecasts for any city</p>
+          
+          {/* Excel Download Button */}
+          <div className="flex justify-center">
+            <ExcelDownloadButton 
+              currentWeather={currentWeather} 
+              forecast={forecast} 
+              uvIndex={uvIndex} 
+            />
+          </div>
         </header>
 
         {/* Search Bar */}
