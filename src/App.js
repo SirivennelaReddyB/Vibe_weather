@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import SearchBar from './components/SearchBar';
 import WeatherCard from './components/WeatherCard';
 import ForecastList from './components/ForecastList';
+import IntroAnimation from './components/IntroAnimation';
 import { LoadingSpinner, ErrorMessage } from './components/Loading';
 import { weatherService } from './services/weatherService';
 
@@ -11,10 +12,12 @@ function App() {
   const [uvIndex, setUvIndex] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showIntroAnimation, setShowIntroAnimation] = useState(false);
 
   const handleSearch = async (city) => {
     setLoading(true);
     setError(null);
+    setShowIntroAnimation(false);
     
     try {
       // Fetch current weather and forecast concurrently
@@ -38,14 +41,22 @@ function App() {
         setUvIndex(null);
       }
       
+      // Start intro animation after data is loaded
+      setLoading(false);
+      setShowIntroAnimation(true);
+      
     } catch (err) {
       setError(err.message);
       setCurrentWeather(null);
       setForecast([]);
       setUvIndex(null);
-    } finally {
       setLoading(false);
+      setShowIntroAnimation(false);
     }
+  };
+
+  const handleIntroAnimationComplete = () => {
+    setShowIntroAnimation(false);
   };
 
   const handleRetry = () => {
@@ -56,6 +67,14 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Intro Animation */}
+      {showIntroAnimation && (
+        <IntroAnimation 
+          weatherData={currentWeather}
+          onAnimationComplete={handleIntroAnimationComplete}
+        />
+      )}
+      
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Header */}
         <header className="text-center mb-8">
@@ -74,8 +93,8 @@ function App() {
         {/* Loading Spinner */}
         {loading && <LoadingSpinner />}
 
-        {/* Weather Content */}
-        {!loading && (
+        {/* Weather Content - only show when not loading and intro animation is not playing */}
+        {!loading && !showIntroAnimation && (
           <>
             {/* Current Weather */}
             <WeatherCard weather={currentWeather} uvIndex={uvIndex} />
