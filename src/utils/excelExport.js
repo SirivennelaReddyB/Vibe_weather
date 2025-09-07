@@ -36,6 +36,12 @@ export const exportWeatherDataToExcel = (currentWeather, forecast, uvIndex) => {
     });
   }
 
+  // Check if we have any data to export
+  if (currentWeatherData.length === 0 && forecastData.length === 0) {
+    console.warn('No weather data available to export');
+    return;
+  }
+
   // Create workbook
   const workbook = XLSX.utils.book_new();
 
